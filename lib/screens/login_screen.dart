@@ -12,8 +12,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginWidgetState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String _email = '';
-  String _password = '';
+  String? _email;
+  String? _password;
 
   void _submit() {
     if (_formKey.currentState!.validate()) {

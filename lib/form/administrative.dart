@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class PatientForm extends StatefulWidget {
+  const PatientForm({Key? key}) : super(key: key);
   @override
   _PatientFormState createState() => _PatientFormState();
 }
@@ -11,8 +12,11 @@ class _PatientFormState extends State<PatientForm> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _admissionDateController =
       TextEditingController();
+  final TextEditingController _occupationController = TextEditingController();
+  final TextEditingController _ethnicityController = TextEditingController();
   String? _gender;
   DateTime? _admissionDate;
+  int? _yearOfBirth;
 
   @override
   void dispose() {
@@ -81,6 +85,62 @@ class _PatientFormState extends State<PatientForm> {
                   },
                 ),
                 const SizedBox(height: 16.0),
+                TextFormField(
+                  controller: _occupationController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nghề nghiệp',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your occupation';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16.0),
+                TextFormField(
+                  controller: _ethnicityController,
+                  decoration: const InputDecoration(
+                    labelText: 'Dân tộc',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your ethnicity';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16.0),
+                TextButton(
+                  onPressed: () async {
+                    final currentDate = _yearOfBirth != null
+                        ? DateTime(_yearOfBirth!, 1, 1)
+                        : DateTime.now();
+                    final date = await showDatePicker(
+                      context: context,
+                      initialDate: currentDate,
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                      initialDatePickerMode: DatePickerMode.year,
+                    );
+                    if (date != null) {
+                      setState(() {
+                        _yearOfBirth = date.year;
+                      });
+                    }
+                  },
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  ),
+                  child: Text(
+                    _yearOfBirth != null
+                        ? 'Năm sinh: ${_yearOfBirth.toString()}'
+                        : 'Năm sinh',
+                  ),
+                ),
+                const SizedBox(height: 16.0),
                 TextButton(
                   onPressed: () async {
                     final currentDate = _admissionDate ?? DateTime.now();
@@ -101,27 +161,19 @@ class _PatientFormState extends State<PatientForm> {
                   ),
                   child: Text(
                     _admissionDate != null
-                        ? DateFormat('dd/MM/yyyy').format(_admissionDate!)
+                        ? "Ngày giờ nhập viện: ${DateFormat('dd/MM/yyyy').format(_admissionDate!)}"
                         : 'Ngày giờ nhập viện',
                   ),
                 ),
                 const SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      // Save the form data
-                      String name = _nameController.text.trim();
-                      String gender = _gender ?? '';
-                      DateTime admissionDate =
-                          DateTime.parse(_admissionDateController.text.trim());
-
-                      // Do something with the form data
-                      print('Name: $name');
-                      print('Gender: $gender');
-                      print('Admission date: $admissionDate');
-                    }
-                  },
-                  child: const Text('Submit'),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() ?? false) {}
+                    },
+                    child: const Text('Submit'),
+                  ),
                 ),
               ],
             ),
